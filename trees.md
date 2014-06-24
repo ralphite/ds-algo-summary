@@ -2,12 +2,23 @@
 
 > Ralph
 
-##General Tree
+##Generic Tree
+
+###Definition
 
 ```java
 class TreeNode<T> {
     T data;
     Set<TreeNode<T>> children;
+}
+```
+
+###ADT
+
+```java
+interface Tree<T> {
+    void insert(T t);
+    void remove(T t);
 }
 ```
 
@@ -22,6 +33,9 @@ class LcrsTreeNode<T> {
 
 *which is a binary tree*
 
+> Why? No container required for children => Space Efficient
+
+
 ##Binary Tree
 
 ```java
@@ -31,17 +45,11 @@ class BinaryTreeNode<T> {
 }
 ```
 
-###Operations?
-
-```java
-interface Tree<T> {
-    void insert(T t);
-    void remove(T t);
-    boolean contains(T t);
-}
-```
+### 
 
 ##BST
+
+> node.left.data <= node.data < node.right.data
 
 ```java
 class BstNode<T extends Comparable<? super T>> {
@@ -53,51 +61,175 @@ class BstNode<T extends Comparable<? super T>> {
 ###BST methods implementation
 
 ```java
+
+// for simplicity duplicates not allowed
+
 public class BST<T extends Comparable<? super T>> {
-    private static class BstNode<T> {
-        T data;
-        BstNode<T> left, right;
-        BstNode(T t, BstNode<T> l, BstNode<T> r) {
-            data=t; left=l; right=r;
-        }
-    }
     private BstNode<T> root;
+
     public void insert(T t) {
         root = insert(t, root);
     }
+
     private BstNode<T> insert(T t, BstNode<T> node) {
-        if(node==null) return new BstNode<T>(t, null, null);
+        if (node == null) return new BstNode<T>(t, null, null);
         int cmp = t.compareTo(node.data);
-        if(cmp<0)
+        if (cmp < 0)
             node.left = insert(t, node.left);
-        else if(cmp>0)
+        else if (cmp > 0)
             node.right = insert(t, node.right);
         return node;
     }
+
     public void remove(T t) {
         root = remove(t, root);
     }
+
     private BstNode<T> remove(T t, BstNode<T> node) {
-        if(node==null) return null;
-        int cmp=t.compareTo(node.data);
-        if(cmp<0)
-            node.left=remove(t, node.left);
-        else if (cmp>0)
+        if (node == null) return null;
+        int cmp = t.compareTo(node.data);
+        if (cmp < 0)
+            node.left = remove(t, node.left);
+        else if (cmp > 0)
             node.right = remove(t, node.right);
         else {
-            if(node.left!=null && node.right!=null) {
-                BstNode<T> rightMin=node.right;
-                while(rightMin.left!=null)
-                    rightMin=rightMin.left;
-                node.data=rightMin.data;
-                node.right=remove(node.data, node.right);
-            } else 
-                node = node.left!=null?node.left:node.right;
+            if (node.left != null && node.right != null) {
+                BstNode<T> rightMin = node.right;
+                while (rightMin.left != null)
+                    rightMin = rightMin.left;
+                node.data = rightMin.data;
+                node.right = remove(node.data, node.right);
+            } else
+                node = node.left != null ? node.left : node.right;
         }
         return node;
     }
+
+    private static class BstNode<T> {
+        T data;
+        BstNode<T> left, right;
+
+        BstNode(T t, BstNode<T> l, BstNode<T> r) {
+            data = t;
+            left = l;
+            right = r;
+        }
+    }
 }
 ```
+
+> What's the problem with the code about?
+>
+> 1. Scan twice to remove
+> 2. Unbalanced tree over time
+>   - remove leftMax and rightMin alternately
+>   - remove leftMax and rightMin randomly
+
+##Traversals
+
+###Recursive
+
+####Pre-order
+
+```python
+def preorder(node):
+    if node is None:
+        return
+    visit(node)
+    preorder(node.left)
+    preorder(node.right)
+```
+
+####Post-order
+
+```python
+def postorder(node):
+    if node is None:
+        return
+    postorder(node.left)
+    postorder(node.right)
+    visit(node)
+```
+
+####In-order (for binary trees)
+
+```python
+def inorder(node):
+    if node is None:
+        return
+    inorder(node.left)
+    visit(node)
+    inorder(node.right)
+```
+
+
+
+###Iterative
+
+####Pre-order
+
+```java
+public void preorder(BinaryTreeNode<T> node) {
+    if(node == null) return;
+    ArrayDeque<BinaryTreeNode<T>> stack = new ArrayDeque<BinaryTreeNode<T>>();
+    stack.push(node);
+    while(!stack.isEmpty()) {
+        BinaryTreeNode<T> n = stack.pop();
+        visit(n);
+        if(n.right!=null)
+            stack.push(n.right);
+        if(n.left!=null)
+            stack.push(n.left);
+    }
+}
+```
+
+####In-order
+
+```java
+public void inorder(BinaryTreeNode<T> node) {
+    ArrayDeque<BianryTreeNode<T>> stack = new ArrayDeque<BinaryTreeNode<T>>();
+    while(node!=null || !stack.isEmpty()) {
+        if(node != null) {
+            stack.push(node);
+            node=node.left;
+        } else {
+            node = stak.pop();
+            visit(node);
+            node = node.right;
+        }
+    }
+}
+```
+
+####Level order
+
+```python
+from Queue import Queue
+def level_order(node):
+    if node is None:
+        return
+    q = Queue()
+    q.put(node)
+    while not q.empty():
+        n=q.get()
+        visit(n)
+        if n.left is not None:
+            q.put(n.left)
+        if n.right is not None:
+            q.put(n.right)
+```
+
+###O(1) space traversals?
+
+##Threaded Binary Trees
+
+###Only left
+
+###Only right
+
+###Both
+
 
 ##Self balancing BSTs
 
@@ -110,30 +242,6 @@ public class BST<T extends Comparable<? super T>> {
 ###Treap
 
 ##B/B-/B+
-
-##Traversals
-
-###Recursive
-
-####Pre-order
-
-####Post-order
-
-####In-order (for binary trees)
-
-####Level order
-
-###Non-recursive
-
-###O(1) space traversals?
-
-##Threaded Binary Trees
-
-###Only left
-
-###Only right
-
-###Both
 
 ##Common problems
 
