@@ -202,6 +202,29 @@ public void inorder(BinaryTreeNode<T> node) {
 }
 ```
 
+####Post-order
+
+```java
+public void postorder(BinaryTreeNode<T> node) {
+    ArrayDeque<BinaryTreeNode<T>> stack = new ArrayDeque<BinaryTreeNode<T>>();
+    BinaryTreeNode<T> prevVisited = null;
+    while(node != null || !stack.isEmpty()) {
+        if(node != null) {
+            stack.push(node);
+            node = node.left;
+        } else {
+            BinaryTreeNode<T> n = stack.peek();
+            if(n.right!=null && n.right!=prevVisited) {
+                node = n.right;
+            } else {
+                visit(stack.pop());
+                prevVisited = n;
+            }
+        }
+    }
+}
+```
+
 ####Level order
 
 ```python
@@ -220,7 +243,18 @@ def level_order(node):
             q.put(n.right)
 ```
 
-###O(1) space traversals?
+> All the traversals above require log(n) space which can be considerable when the tree is poorly balanced. Two possible ways to solve this problem
+>
+>    - Maintain a parent pointer in each node (GIST)
+>    - Morris traversals using a threaded tree
+
+###Morris Traversal (O(n) Time, O(1) Space)
+
+####Pre-order
+
+####Inorder
+
+####Postorder
 
 ##Threaded Binary Trees
 
@@ -230,6 +264,7 @@ def level_order(node):
 
 ###Both
 
+##Array Storage
 
 ##Self balancing BSTs
 
@@ -250,3 +285,5 @@ def level_order(node):
 ###Mirrored Tree
 
 ###Max Path Sum
+
+###Bottom-up level traversal
