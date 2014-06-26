@@ -250,19 +250,21 @@ def level_order(node):
 
 ###Morris Traversal (O(n) Time, O(1) Space)
 
-####Pre-order
+####Preorder
 
 ####Inorder
 
 ####Postorder
 
+####Level order
+
 ##Threaded Binary Trees
 
-###Only left
+###Left threaded binary tree
 
-###Only right
+###Right threaded binary tree
 
-###Both
+###Both threaded binary tree
 
 ##Array Storage
 
@@ -270,7 +272,32 @@ def level_order(node):
 
 ###AVL
 
+- First invented self balancing binary tree
+- O(log(n)) avg and worst performance for lookup, insertion and deletion
+- Performs better than red-black tree in lookup-intensive applications because it's more rigidly balanced
+
+modifications may require tree rotations
+
+- left single/double rotation
+- right single/double rotation
+
+####Lookup
+
+####Insertion
+
+####Deletion
+
 ###Splay
+
+- Self adjusting tree with additional property that recently accessed elements are quick to access again
+    - very common in real world applications such as caches and GC algorithms
+- O(log n) amortized time for basic operations such as lookup, add and remove
+- Works well when there are identical keys which other self balancing trees usually do not
+- Worst case can be O(n) which is although unlikely
+- Lookup operation changes tree structure which causes problems in a multi-threaded environment.
+
+
+
 
 ###Red-black
 
